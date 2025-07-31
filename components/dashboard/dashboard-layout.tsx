@@ -16,9 +16,9 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children, user }: DashboardLayoutProps) {
   return (
     <SidebarProvider defaultOpen>
-      {/* 12-col grid alinhada aos breakpoints Polaris */}
+      {/* Grid 12-cols alinhada a Polaris */}
       <div className="min-h-screen grid grid-cols-12 gap-4 sm:gap-4 md:gap-6 lg:gap-6 bg-background">
-        {/* Sidebar — só visível ≥ md */}
+        {/* Sidebar visível ≥ md */}
         <aside className="hidden md:block md:col-span-4 lg:col-span-3 xl:col-span-2">
           <AppSidebar />
         </aside>
