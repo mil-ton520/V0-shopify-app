@@ -11,7 +11,30 @@ const config: Config = {
     "*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
-  	extend: {
+  	extend: {// Breakpoints Shopify Polaris
+screens: {
+  xs: '0px',
+  sm: '490px',
+  md: '768px',
+  lg: '1040px',
+  xl: '1440px',
+},
+
+// Escala de espaçamento 4 px
+spacing: {
+  1: '4px',
+  2: '8px',
+  3: '12px',
+  4: '16px',
+  6: '24px',
+  8: '32px',
+},
+
+// Fonte padrão Polaris
+fontFamily: {
+  sans: ['Inter', 'system-ui', 'sans-serif'],
+},
+
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
