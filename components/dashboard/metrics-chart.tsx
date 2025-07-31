@@ -1,39 +1,88 @@
 "use client"
 
-export function MetricsChart() {
-  const data = [
-    { month: "Jan", recovery: 18.2 },
-    { month: "Fev", recovery: 19.8 },
-    { month: "Mar", recovery: 21.4 },
-    { month: "Abr", recovery: 22.1 },
-    { month: "Mai", recovery: 23.7 },
-    { month: "Jun", recovery: 24.8 },
-  ]
+import { useMemo } from "react"
+import dynamic from "next/dynamic"
+import { Skeleton } from "@/components/ui/skeleton"
+
+// 📊 Recharts components – carregados só no client
+const ResponsiveContainer = dynamic(
+  () => import("recharts").then((m) => m.ResponsiveContainer),
+  { ssr: false }
+)
+const LineChart = dynamic(
+  () => import("recharts").then((m) => m.LineChart),
+  { ssr: false }
+)
+const Line = dynamic(
+  () => import("recharts").then((m) => m.Line),
+  { ssr: false }
+)
+const XAxis = dynamic(
+  () => import("recharts").then((m) => m.XAxis),
+  { ssr: false }
+)
+const YAxis = dynamic(
+  () => import("recharts").then((m) => m.YAxis),
+  { ssr: false }
+)
+const Tooltip = dynamic(
+  () => import("recharts").then((m) => m.Tooltip),
+  { ssr: false }
+)
+
+interface MetricsChartProps {
+  loading?: boolean
+}
+
+export function MetricsChart({ loading = false }: MetricsChartProps) {
+  // TODO: trocar por fetch/GraphQL Shopify
+  const data = useMemo(
+    () => [
+      { month: "Jan", recovery: 18.2 },
+      { month: "Fev", recovery: 19.8 },
+      { month: "Mar", recovery: 21.4 },
+      { month: "Abr", recovery: 22.1 },
+      { month: "Mai", recovery: 23.7 },
+      { month: "Jun", recovery: 24.8 },
+    ],
+    []
+  )
+
+  if (loading) {
+    return <Skeleton className="h-60 w-full rounded-md" />
+  }
 
   return (
-    <div className="h-80 flex items-center justify-center bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-      <div className="text-center">
-        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-            />
-          </svg>
-        </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Gráfico de Evolução</h3>
-        <p className="text-gray-600 mb-4">Taxa de recuperação nos últimos 6 meses</p>
-        <div className="flex justify-center gap-4 text-sm">
-          {data.map((item, index) => (
-            <div key={index} className="text-center">
-              <div className="font-medium text-gray-900">{item.month}</div>
-              <div className="text-blue-500">{item.recovery}%</div>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="aspect-[4/3] w-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <Line
+            type="monotone"
+            dataKey="recovery"
+            stroke="hsl(var(--primary))"
+            strokeWidth={2}
+            dot={{ r: 4, fill: "hsl(var(--primary))" }}
+          />
+          <XAxis
+            dataKey="month"
+            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            tickFormatter={(v: number) => `${v}%`}
+            domain={[0, (max: number) => max + 5]}
+            tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+            width={32}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip
+            formatter={(v: number) => `${v}%`}
+            contentStyle={{ borderRadius: 8 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   )
 }
